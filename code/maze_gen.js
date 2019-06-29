@@ -1,35 +1,38 @@
 let cell=[];
 let i,j;
-let size=10
+let size=20;
 let current;
 let w=600;
 let h=600;
-let n=(w/size)-1;
 let neighbour=[];
 let stack=[];
 let prev;
 let left=0;
+let n;
 
 function setup(){
   createCanvas(w,h);
-  frameRate(100)
+  n=floor((w-10)/size);
+  // frameRate(60)
   for(i=0;i<n;i++){
     cell[i]=[];
     for(j=0;j<n;j++){
-      cell[i][j]=new cells((i+1)*size,(j+1)*size,i,j);
+      cell[i][j]=new cells((i)*size,(j)*size,i,j); //if first row and cols are shown then i->i+1,j->j+1 for proper display
     }
   }
   current=cell[0][0];
   current.visit=true;
   stack.push(current);
+  
+  cell[n-1][n-1].walls[0]=false;
 }
 
 
 function draw(){
     left=0;
     background(0)
-    for(i=0;i<n;i++){
-      for(j=0;j<n;j++){
+    for(i=1;i<n;i++){ // i=1; therefore the first col is not shown, if needed set i=0;
+      for(j=1;j<n;j++){ // j=1;therfore the first row is not shown,if needed set j=0;
         cell[i][j].show();
         if(!cell[i][j].visit){
           left+=1;
@@ -50,11 +53,16 @@ function draw(){
         current.visit=true;
         neighbour=current.neighbours(current.i,current.j)
       }
-      else if(stack){
+      else if(stack.length>0){
         current=stack.pop();
+        // console.log(current)
         current.visit=true
         neighbour=current.neighbours(current.i,current.j);
       }
+    }
+    else{
+      console.log("FINISHED");
+      noLoop()
     }
 
 
@@ -74,7 +82,7 @@ class cells{
   show(){
     rectMode(CENTER);
     stroke(255);
-    strokeWeight(1)
+    strokeWeight(3)
     if(this.walls[0] == true){
       line(this.x-this.side/2,this.y+this.side/2,this.x+this.side/2,this.y+this.side/2);
     }
@@ -86,13 +94,6 @@ class cells{
     }
     if(this.walls[3]==true){
       line(this.x-this.side/2,this.y+this.side/2,this.x-this.side/2,this.y-this.side/2);
-    }
-
-    if(this.visit){
-      noStroke();
-      noFill()
-      // fill(148,0,211,100)
-      rect(this.x,this.y,this.side,this.side);
     }
   }
 
@@ -142,37 +143,6 @@ neighbours(i,j){
 
 }
 
-
-
-  // neighbours(i,j){
-  //   let arr=[]
-  //   if(i>1){
-  //     arr[0]=cell[i-1][j];
-  //   }
-  //   else{
-  //     arr[0]=undefined;
-  //   }
-  //   if(j>1){
-  //     arr[1]=cell[i][j-1];
-  //   }
-  //   else{
-  //     arr[1]=undefined
-  //   }
-  //   if(i<n-1){
-  //     arr[2]=cell[i+1][j];
-  //   }
-  //   else{
-  //     arr[2]=undefined;
-  //   }
-  //   if(j<n-1){
-  //     arr[3]=cell[i][j+1];
-  //   }
-  //   else{
-  //     arr[3]=undefined;
-  //   }
-  //   return(arr)
-  // }
-
 }
 
 
@@ -183,6 +153,7 @@ function arr_strip(arr){
       arr.splice(i,1);
     }
   }
-  // console.log(arr)
   return(arr)
 }
+
+
