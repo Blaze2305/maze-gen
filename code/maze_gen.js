@@ -73,7 +73,7 @@ class cells{
   constructor(x,y,i,j){
     this.x=x;
     this.y=y;
-    this.vist=false;
+    this.visit=false;
     this.side=size;
     this.walls=[true,true,true,true];  // bottom,right,top ,left
     this.i=i;
